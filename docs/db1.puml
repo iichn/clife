@@ -1,0 +1,85 @@
+@startuml
+left to right direction
+hide circle
+
+entity "category" as category {
+  * **id** : TEXT <<PK>>
+  --
+  * name : TEXT
+  color_key : TEXT
+  * sort_order : INTEGER = 0
+  * created_at : INTEGER
+  * updated_at : INTEGER
+  deleted_at : INTEGER
+}
+
+entity "counter" as counter {
+  * **id** : TEXT <<PK>>
+  --
+  category_id : TEXT <<FK>>
+  color_key : TEXT
+  * title : TEXT
+  description : TEXT
+  goal_target : INTEGER
+  goal_period : TEXT
+  period_start : INTEGER
+  * sort_order : INTEGER = 0
+  * created_at : INTEGER
+  * updated_at : INTEGER
+  archived_at : INTEGER
+  deleted_at : INTEGER
+}
+
+entity "counter_event" as counter_event {
+  * **id** : TEXT <<PK>>
+  --
+  * counter_id : TEXT <<FK>>
+  * type : TEXT
+  * delta : INTEGER
+  * occurred_at : INTEGER
+  * tz_id : TEXT
+  * created_at : INTEGER
+  deleted_at : INTEGER
+}
+
+entity "task" as task {
+  * **id** : TEXT <<PK>>
+  --
+  category_id : TEXT <<FK>>
+  color_key : TEXT
+  * title : TEXT
+  description : TEXT
+  repeat_type : TEXT
+  repeat_interval : INTEGER
+  repeat_unit : TEXT
+  repeat_start : TEXT
+  repeat_weekdays : TEXT
+  repeat_until : TEXT
+  next_date : TEXT
+  last_done_at : INTEGER
+  done_at : INTEGER
+  * sort_order : INTEGER = 0
+  * created_at : INTEGER
+  * updated_at : INTEGER
+  archived_at : INTEGER
+  deleted_at : INTEGER
+}
+
+entity "task_event" as task_event {
+  * **id** : TEXT <<PK>>
+  --
+  * task_id : TEXT <<FK>>
+  * type : TEXT
+  for_date : TEXT
+  * occurred_at : INTEGER
+  * tz_id : TEXT
+  * created_at : INTEGER
+  deleted_at : INTEGER
+}
+
+' Привязка строго между ключевыми полями
+category::id ||..o{ counter::category_id
+category::id ||..o{ task::category_id
+counter::id ||--o{ counter_event::counter_id
+task::id ||--o{ task_event::task_id
+@enduml

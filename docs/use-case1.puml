@@ -1,0 +1,70 @@
+@startuml
+left to right direction
+skinparam actorStyle Hollow
+skinparam packageStyle rectangle
+
+actor "Пользователь" as User
+
+rectangle "C-Life (MVP)" {
+
+    usecase "Просматривать активный список\nзадач и счётчиков" as UC_ViewList
+
+    ' --- ВЕТКА 1: УПРАВЛЕНИЕ СПИСКОМ ---
+    usecase "Управлять элементами списка" as UC_ManageList
+    
+    usecase "Создать задачу" as UC_CreateTask
+    usecase "Настроить повторение\n(по календарю / от выполнения)" as UC_SetRepeat
+    
+    usecase "Создать счётчик" as UC_CreateCounter
+    usecase "Задать цель и период" as UC_SetGoal
+    
+    usecase "Редактировать элемент" as UC_EditItem
+    usecase "Удалить элемент" as UC_DeleteItem
+    usecase "Убрать элемент\nв архив" as UC_MoveToBacklog
+
+    ' --- ВЕТКА 2: РАБОТА С ЗАДАЧЕЙ ---
+    usecase "Работать с задачей" as UC_InteractTask
+    
+    usecase "Выполнить разовую задачу" as UC_CompleteSingleTask
+    usecase "Засчитать текущий цикл\nповторяющейся задачи" as UC_CheckRepeatCycle
+    usecase "Остановить серию повторений (в архив)" as UC_StopRepeatSeries
+
+    ' --- ВЕТКА 3: РАБОТА СО СЧЁТЧИКОМ ---
+    usecase "Работать со счётчиком" as UC_InteractCounter
+    
+    usecase "Изменить значение (+1 / -1)" as UC_ChangeVal
+    usecase "Сбросить значение" as UC_ResetVal
+
+    ' === СВЯЗИ (Дерево слева направо) ===
+    
+    User --> UC_ViewList
+
+    ' Уровень 1: Три главные ветки от экрана
+    UC_ViewList <.. UC_ManageList : <<extend>>
+    UC_ViewList <.. UC_InteractTask : <<extend>>
+    UC_ViewList <.. UC_InteractCounter : <<extend>>
+
+    ' Уровень 2: Управление списком
+    UC_ManageList <.. UC_CreateTask : <<extend>>
+    UC_ManageList <.. UC_CreateCounter : <<extend>>
+    UC_ManageList <.. UC_EditItem : <<extend>>
+    UC_ManageList <.. UC_DeleteItem : <<extend>>
+    UC_ManageList <.. UC_MoveToBacklog : <<extend>>
+
+    ' Уровень 3: Опции при создании и редактировании
+    UC_CreateTask <.. UC_SetRepeat : <<extend>>
+    UC_EditItem <.. UC_SetRepeat : <<extend>>
+    
+    UC_CreateCounter <.. UC_SetGoal : <<extend>>
+    UC_EditItem <.. UC_SetGoal : <<extend>>
+
+    ' Уровень 2: Действия с задачей
+    UC_InteractTask <.. UC_CompleteSingleTask : <<extend>>
+    UC_InteractTask <.. UC_CheckRepeatCycle : <<extend>>
+    UC_InteractTask <.. UC_StopRepeatSeries : <<extend>>
+
+    ' Уровень 2: Действия со счётчиком
+    UC_InteractCounter <.. UC_ChangeVal : <<extend>>
+    UC_InteractCounter <.. UC_ResetVal : <<extend>>
+}
+@enduml
